@@ -10,6 +10,7 @@ import (
 const (
 	learnRate = 0.001
 	featSize  = 2
+	iterNum   = 15000
 )
 
 type Neuron struct {
@@ -36,7 +37,11 @@ func (n *Neuron) Initialize(input Input, output []float64) {
 
 func (n *Neuron) ForwardStep() {
 	for i, v := range n.X {
-		n.yHat[i] = v[0]*n.W[0] + v[1]*n.W[1] + n.b
+		n.yHat[i] = 0
+		for j := 0; j < featSize; j++ {
+			n.yHat[i] += v[j] * n.W[j]
+		}
+		n.yHat[i] += n.b
 	}
 }
 
@@ -71,7 +76,7 @@ func main() {
 
 	fmt.Println(n)
 
-	for i := 0; i < 100; i++ {
+	for i := 0; i < iterNum; i++ {
 		n.ForwardStep()
 		n.BackwardStep()
 		fmt.Println("Cost: ", n.Cost())
