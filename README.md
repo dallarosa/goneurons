@@ -16,5 +16,17 @@ At some point I might move the input and output to be set from the command line
 but for now just change it in the main function. the same goes for the number of
 iterations, the number of features and the learning rate.
 
+The idea is to keep adding features so that at some point you can actually do some
+interesting things, but this is by no means focused on speed or scalability. The 
+main focus is code readiability and being a educational resource (mostly for myself).
+
+Things in my TODO list:
+
+* Allowing Neurons to be stacked in layers
+* Add Optimization Algorithms (Adams)
+* Add Activation Functions (ReLU, Sigmoid, Tanh, Softmax)
+
+I'm also open to suggestions.
+
 DISCLAIMER: This was created for educational purposes. Feel free to use this code
 but use it at your own discretion.
