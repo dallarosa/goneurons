@@ -5,12 +5,21 @@ import (
 	"math"
 	"math/rand"
 	"time"
+
+	"gonum.org/v1/plot"
+	"gonum.org/v1/plot/plotter"
+	"gonum.org/v1/plot/plotutil"
+	"gonum.org/v1/plot/vg"
 )
 
 const (
 	learnRate = 0.001
 	featSize  = 2
 	iterNum   = 15000
+)
+
+var (
+	pts plotter.XYs
 )
 
 type Neuron struct {
@@ -70,20 +79,47 @@ func (n *Neuron) BackwardStep() {
 	n.b += delta * learnRate
 }
 
+func plotCost() {
+	p, err := plot.New()
+	if err != nil {
+		panic(err)
+	}
+
+	p.Title.Text = "Cost Graph"
+	p.X.Label.Text = "Iteration"
+	p.Y.Label.Text = "Cost"
+
+	err = plotutil.AddLinePoints(p, "Cost", pts)
+
+	if err != nil {
+		panic(err)
+	}
+
+	// Save the plot to a PNG file.
+	if err := p.Save(4*vg.Inch, 4*vg.Inch, "cost.png"); err != nil {
+		panic(err)
+	}
+}
+
 func main() {
 	n := new(Neuron)
-	n.Initialize(Input{{1, 2}, {2, 3}, {5, 5}, {4, 3}, {2, 2}, {10, 10}, {6, 4}, {34, 12}}, []float64{3, 5, 10, 7, 4, 20, 10, 46})
+	n.Initialize(Input{{1, 2}, {2, 3}, {5, 5}, {4, 3}, {2, 2}, {10, 10}, {6, 4},
+		{34, 12}}, []float64{3, 5, 10, 7, 4, 20, 10, 46})
 
 	fmt.Println(n)
+	pts = make(plotter.XYs, iterNum)
 
 	for i := 0; i < iterNum; i++ {
 		n.ForwardStep()
 		n.BackwardStep()
-		fmt.Println("Cost: ", n.Cost())
+		//	fmt.Println("Cost: ", n.Cost())
+		pts[i].X = float64(i)
+		pts[i].Y = n.Cost()
 	}
 	for i, v := range n.yHat {
 		fmt.Println("yHat[", i, "]: ", v)
 	}
 	fmt.Println(n)
+	plotCost()
 
 }
